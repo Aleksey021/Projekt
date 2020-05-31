@@ -1,11 +1,16 @@
-package sample;
-
+import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class Controller {
 
@@ -35,13 +40,69 @@ public class Controller {
 
     @FXML
     void initialize() {
-        assert LoginSinUpButtom != null : "fx:id=\"LoginSinUpButtom\" was not injected: check your FXML file 'aut.fxml'.";
-        assert Login_field != null : "fx:id=\"Login_field\" was not injected: check your FXML file 'aut.fxml'.";
-        assert Password_field != null : "fx:id=\"Password_field\" was not injected: check your FXML file 'aut.fxml'.";
-        assert aithSingUpButtom != null : "fx:id=\"aithSingUpButtom\" was not injected: check your FXML file 'aut.fxml'.";
-        assert Password_Restore != null : "fx:id=\"Password_Restore\" was not injected: check your FXML file 'aut.fxml'.";
-        assert Politics_buttom != null : "fx:id=\"Politics_buttom\" was not injected: check your FXML file 'aut.fxml'.";
+        LoginSinUpButtom.setOnAction(event -> {
+            LoginSinUpButtom.getScene().getWindow().hide();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/Регистрация.fxml"));
+            try {
+                loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Parent root = loader.getRoot();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        });
 
+        aithSingUpButtom.setOnAction(event -> {
+            String loginText = Login_field.getText().trim();
+            String loginPassword = Password_field.getText().trim();
+            if (!loginText.equals("") && !loginPassword.equals(""))
+                loginUser(loginText, loginPassword);
+            else
+                System.out.println("Неправильный логин или пароль!");
+        });
+    }
+
+    private void loginUser(String loginText, String loginPassword) {
+
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        User user = new User();
+        user.setLogin(loginText);
+        user.setPassvord(loginPassword);
+        ResultSet result = dbHandler.getUser(user);
+
+        int counter = 0;
+
+        while (true) {
+            try {
+                if (!result.next()) break;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            counter++;
+        }
+
+        if (counter >= 1) {
+
+            aithSingUpButtom.setOnAction(event -> {
+                aithSingUpButtom.getScene().getWindow().hide();
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/Главное меню общее!.fxml"));
+                try {
+                    loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Parent root = loader.getRoot();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.showAndWait();
+            });
+
+            System.out.println("Успех!");
+        }
     }
 }
 

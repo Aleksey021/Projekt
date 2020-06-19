@@ -1,12 +1,18 @@
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,7 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class Controllergl {
+public class Controllergl implements Initializable {
 
     @FXML
     private AnchorPane AGory;
@@ -53,12 +59,10 @@ public class Controllergl {
     private Button ProfButtom;
 
     @FXML
-    void CreateGruppButtom(ActionEvent event) {
-    }
+    private Button CreateGruppButtom;
 
-    @FXML
-    void goinGruppButtom(ActionEvent event) {
-    }
+    //@FXML
+    //private Button goinGruppButtom;
 
     @FXML
     Text Nameid;
@@ -73,7 +77,7 @@ public class Controllergl {
     Text Loginid;
 
     @FXML
-    private TableView Tgory;
+    private TableView<Mountain> Tgory;
 
     @FXML
     private TableColumn<Mountain, String> Kver;
@@ -87,103 +91,197 @@ public class Controllergl {
     @FXML
     private TableColumn<Mountain, String> Kgs;
 
+    private ObservableList<Mountain> data;
+
 
     @FXML
-    void initialize() {
+    private TableView<Otrady1> Totrady;
+
+    @FXML
+    private TableColumn<Otrady1, String> Kotrady1;
+
+    @FXML
+    private TableColumn<Otrady1, Integer> Kych;
+
+    @FXML
+    private TableColumn<Otrady1, String> Kkv;
+
+    private ObservableList<Otrady1> data2;
+
+
+    @FXML
+    private TableView<Poxody1> Tpoxod;
+
+    @FXML
+    private TableColumn<Poxody1, String> Kotrady2;
+
+    @FXML
+    private TableColumn<Poxody1, Integer> Kgora;
+
+    @FXML
+    private TableColumn<Poxody1, String> Kdatan;
+
+    private ObservableList<Poxody1> dat;
+
+
+
+    private DBClass dc;
+
+    @FXML
+    public void initialize(URL url, ResourceBundle rb) {
+
+        dc=new DBClass();
+
         GoraButtom.setOnAction(event -> {
             AGory.setOpacity(1);
             AOtrady.setOpacity(0);
             AProfil.setOpacity(0);
+
+            AGory.toFront();
+            AGory.toFront();
+            AOtrady.toBack();
+            AProfil.toBack();
+
+            AGory.setMinSize(722, 620);
+            AGory.setMaxSize(722, 620);
+            AGory.setPrefSize(722, 620);
+
+            AOtrady.setMinSize(0, 0);
+            AOtrady.setMaxSize(0, 0);
+            AOtrady.setPrefSize(0, 0);
+
+            AProfil.setMinSize(0, 0);
+            AProfil.setMaxSize(0, 0);
+            AProfil.setPrefSize(0, 0);
+
+            {try {
+                Connection conn = dc.Connect();
+                data = FXCollections.observableArrayList();
+                ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM mountans");
+                while (rs.next()) {
+                    data.add(new Mountain(rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5)));
+                }
+
+            } catch (SQLException ex){
+                System.err.println("ERROR" + ex);
+            }
+
+            Kver.setCellValueFactory(new PropertyValueFactory<>("vershina"));
+            Kvis.setCellValueFactory(new PropertyValueFactory<>("visota"));
+            Kmes.setCellValueFactory(new PropertyValueFactory<>("mestopoloqenie"));
+            Kgs.setCellValueFactory(new PropertyValueFactory<>("sistema"));
+
+            Tgory.setItems(null);
+            Tgory.setItems(data);}
+
         });
 
         GruppButtom.setOnAction(event -> {
-            AGory.setOpacity(0);
+            {AGory.setOpacity(0);
             AOtrady.setOpacity(1);
             AProfil.setOpacity(0);
+
+            AGory.toBack();
+            AOtrady.toFront();
+            AOtrady.toFront();
+            AProfil.toBack();
+
+            AGory.setMinSize(0, 0);
+            AGory.setMaxSize(0, 0);
+            AGory.setPrefSize(0, 0);
+
+            AOtrady.setMinSize(722, 620);
+            AOtrady.setMaxSize(722, 620);
+            AOtrady.setPrefSize(722, 620);
+
+            AProfil.setMinSize(0, 0);
+            AProfil.setMaxSize(0, 0);
+            AProfil.setPrefSize(0, 0);}
+
+
+            {try {
+                Connection conn = dc.Connect();
+                data2 = FXCollections.observableArrayList();
+                ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM otrady");
+                while (rs.next()) {
+                    data2.add(new Otrady1(rs.getString(2), rs.getInt(3), rs.getInt(4)));
+                }
+
+            } catch (SQLException ex){
+                System.err.println("ERROR" + ex);
+            }
+
+                Kotrady1.setCellValueFactory(new PropertyValueFactory<>("nameotr"));
+                Kych.setCellValueFactory(new PropertyValueFactory<>("ycasniki"));
+                Kkv.setCellValueFactory(new PropertyValueFactory<>("vosh"));
+
+                Totrady.setItems(null);
+                Totrady.setItems(data2);}
+
+
+            {try {
+                Connection conn1 = dc.Connect();
+                dat = FXCollections.observableArrayList();
+                ResultSet rs1 = conn1.createStatement().executeQuery("SELECT * FROM poxody");
+                while (rs1.next()) {
+                    dat.add(new Poxody1(rs1.getString(1), rs1.getString(2), rs1.getString(3)));
+                }
+
+            } catch (SQLException ex){
+                System.err.println("ERROR" + ex);
+            }
+
+                Kotrady2.setCellValueFactory(new PropertyValueFactory<>("otrad"));
+                Kgora.setCellValueFactory(new PropertyValueFactory<>("gora"));
+                Kdatan.setCellValueFactory(new PropertyValueFactory<>("datavos"));
+
+                Tpoxod.setItems(null);
+                Tpoxod.setItems(dat);}
+
         });
 
         ProfButtom.setOnAction(event -> {
-            AGory.setOpacity(0);
+            {AGory.setOpacity(0);
             AOtrady.setOpacity(0);
             AProfil.setOpacity(1);
+
+            AGory.toBack();
+            AOtrady.toBack();
+            AProfil.toFront();
+            AProfil.toFront();
+
+            AGory.setMinSize(0, 0);
+            AGory.setMaxSize(0, 0);
+            AGory.setPrefSize(0, 0);
+
+            AOtrady.setMinSize(0, 0);
+            AOtrady.setMaxSize(0, 0);
+            AOtrady.setPrefSize(0, 0);
+
+            AProfil.setMinSize(722, 620);
+            AProfil.setMaxSize(722, 620);
+            AProfil.setPrefSize(722, 620);}
+
+
+
         });
 
-        GoraButtom.setOnAction(event -> {
-
-                    initData();
-
-                    // устанавливаем тип и значение которое должно хранится в колонке
-                    Kver.setCellValueFactory(new PropertyValueFactory<Mountain, String>("vershina"));
-                    Kvis.setCellValueFactory(new PropertyValueFactory<Mountain, Integer>("visota"));
-                    Kmes.setCellValueFactory(new PropertyValueFactory<Mountain, String>("mestopoloqenie"));
-                    Kgs.setCellValueFactory(new PropertyValueFactory<Mountain, String>("sistema"));
-
-                    // заполняем таблицу данными
-                    Tgory.setItems(usersData);
-                }
-
-                // подготавливаем данные для таблицы
-                // вы можете получать их с базы данных
-        private void initData() {
-            usersData.add(new User(1, "Alex", "qwerty", "alex@mail.com"));
-            usersData.add(new User(2, "Bob", "dsfsdfw", "bob@mail.com"));
-            usersData.add(new User(3, "Jeck", "dsfdsfwe", "Jeck@mail.com"));
-            usersData.add(new User(4, "Mike", "iueern", "mike@mail.com"));
-            usersData.add(new User(5, "colin", "woeirn", "colin@mail.com"));
-        }
-
-            {String ver = Kver.getText().trim();
-            int vis = Integer.parseInt(Kvis.getText().trim());
-            String mes = Kmes.getText().trim();
-            String gs = Kgs.getText().trim();
-            if (!ver.equals("") && mes.equals("") && gs.equals(""))
-                loginUser(ver, vis, mes, gs);
-            else
-                System.out.println("ERROR!");}
-        });
-    }
-
-    private void loginUser(String ver, int vis, String mes, String gs) {
-
-        DatabaseHandler dbHandler = new DatabaseHandler();
-        Mountain mountain = new Mountain();
-        mountain.setVershina(ver);
-        mountain.setVisota(vis);
-        mountain.setMestopoloqenie(mes);
-        mountain.setSistema(gs);
-        ResultSet result = dbHandler.getMountain(mountain);
-
-        int counter = 0;
-
-        while (true) {
+        CreateGruppButtom.setOnAction(event -> {
             try {
-                if (!result.next()) break;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            counter++;
-        }
-
-        /*if (counter >= 1) {
-
-            GoraButtom.setOnAction(event -> {
-                aithSingUpButtom.getScene().getWindow().hide();
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/Главное меню общее!.fxml"));
-                try {
-                    loader.load();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Parent root = loader.getRoot();
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("Otrad.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 800, 500);
                 Stage stage = new Stage();
-                stage.setScene(new Scene(root));
-                stage.showAndWait();
-            });
-
-            System.out.println("Успех!");
-        }
-    }*/
+                stage.setTitle("New Window");
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                Logger logger = Logger.getLogger(getClass().getName());
+                logger.log(Level.SEVERE, "Failed to create new Window.", e);
+            }
+        });
 
     }
+
+
 }

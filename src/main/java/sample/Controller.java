@@ -88,14 +88,14 @@ public class Controller {
 
             aithSingUpButtom.setOnAction(event -> {
                 aithSingUpButtom.getScene().getWindow().hide();
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/Главное меню общее!.fxml"));
+                FXMLLoader loader2 = new FXMLLoader();
+                loader2.setLocation(getClass().getResource("/Главное меню общее!.fxml"));
                 try {
-                    loader.load();
+                    loader2.load();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Parent root = loader.getRoot();
+                Parent root = loader2.getRoot();
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
                 stage.showAndWait();

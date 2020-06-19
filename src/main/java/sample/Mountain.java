@@ -1,49 +1,55 @@
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class Mountain {
-    private String vershina;
-    private int visota;
-    private String mestopoloqenie;
-    private String sistema;
 
-    public Mountain(String vershina, int visota, String mestopoloqenie, String sistema) {
-        this.vershina = vershina;
-        this.visota = visota;
-        this.mestopoloqenie = mestopoloqenie;
-        this.sistema = sistema;
+    private final StringProperty vershina;
+    private final IntegerProperty visota;
+    private final StringProperty mestopoloqenie;
+    private final StringProperty sistema;
+
+    public Mountain(String vershina, Integer visota, String mestopoloqenie, String sistema) {
+        this.vershina = new SimpleStringProperty(vershina);
+        this.visota = new SimpleIntegerProperty(visota);
+        this.mestopoloqenie = new SimpleStringProperty(mestopoloqenie);
+        this.sistema = new SimpleStringProperty(sistema);
     }
 
-    public Mountain() {
-
-    }
 
     public String getVershina() {
-        return vershina;
+        return vershina.get();
     }
 
-    public void setVershina(String vershina) {
-        this.vershina = vershina;
-    }
-
-    public int getVisota() {
-        return visota;
-    }
-
-    public void setVisota(int visota) {
-        this.visota = visota;
+    public Integer getVisota() {
+        return visota.get();
     }
 
     public String getMestopoloqenie() {
-        return mestopoloqenie;
-    }
-
-    public void setMestopoloqenie(String mestopoloqenie) {
-        this.mestopoloqenie = mestopoloqenie;
+        return mestopoloqenie.get();
     }
 
     public String getSistema() {
-        return sistema;
+        return sistema.get();
     }
 
-    public void setSistema(String sistema) {
-        this.sistema = sistema;
-    }
+
+    public void setVershina(String value){vershina.set(value);}
+
+    public void setVisota(Integer value){visota.set(value);}
+
+    public void setMestopoloqenie(String value){mestopoloqenie.set(value);}
+
+    public void setSistema(String value){sistema.set(value);}
+
+
+    public StringProperty VerProperty(){return vershina;}
+
+    public IntegerProperty VisProperty(){return visota;}
+
+    public StringProperty MesProperty(){return mestopoloqenie;}
+
+    public StringProperty GsProperty(){return sistema;}
+
 }

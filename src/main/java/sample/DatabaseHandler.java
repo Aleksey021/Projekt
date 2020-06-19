@@ -61,28 +61,6 @@ public class DatabaseHandler extends Configs {
     }
 
 
-    /*public ResultSet getUser2(User user) {
-        ResultSet resultSet = null;
-
-        String select = "SELECT * FROM " + Const.USER_TABLE + " WHERE " + Const.USERS_NAME + "=? AND " + Const.USERS_LASTNAME + "=? AND " +
-                Const.USER_EMAIL + "=? AND " + Const.USER_LOGIN + "=?";
-
-        try {
-            PreparedStatement prSt = getDbConnection().prepareStatement(select);
-            prSt.setString(1, user.getName());
-            prSt.setString(2, user.getLastname());
-            prSt.setString(3, user.getEmail());
-            prSt.setString(4, user.getLogin());
-
-            resultSet = prSt.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return resultSet;
-    }*/
 
     public ResultSet getMountain(Mountain mountain) {
         ResultSet resSet = null;
@@ -104,5 +82,24 @@ public class DatabaseHandler extends Configs {
         }
 
         return resSet;
+    }
+
+
+
+    public void signUpOtr(Otrady2 otrady){
+        String insert = "INSERT INTO otrady(nameotr, passv) VALUES(?,?)";
+
+        try {
+            PreparedStatement prSt = getDbConnection().prepareStatement(insert);
+            prSt.setString(1, otrady.getNameotr());
+            prSt.setString(2, otrady.getPassv());
+
+
+            prSt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
